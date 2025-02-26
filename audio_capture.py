@@ -9,8 +9,8 @@ CHUNK = 1024
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 44100
-THRESHOLD = 500  # 音量阈值，需根据环境调整
-SILENT_CHUNKS = 3 * RATE / CHUNK  # 持续3秒
+THRESHOLD = 200  # 音量阈值，需根据环境调整
+SILENT_CHUNKS = 1 * RATE / CHUNK  # 持续3秒
 VOLUME_HISTORY_LENGTH = 10  # 音量显示平滑系数
 
 def save_audio(data, filename):
