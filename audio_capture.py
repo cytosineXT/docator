@@ -12,7 +12,9 @@ RATE = 44100
 THRESHOLD = 100  # 音量阈值，需根据环境调整
 SILENT_CHUNKS = 0.1 * RATE / CHUNK  # 持续1秒
 VOLUME_HISTORY_LENGTH = 10  # 音量显示平滑系数
-savedir = "data2"
+from datetime import datetime
+date = datetime.today().strftime("%m%d")
+savedir = f"data/data{date}"
 
 def save_audio(data, filename):
     os.makedirs(os.path.dirname(filename), exist_ok=True)

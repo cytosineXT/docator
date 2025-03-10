@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 from scipy.fftpack import fft
 
 # 设置目录
-wav_dir = r"C:\Users\12046\workspace\docator\data"
-save_dir = r"C:\Users\12046\workspace\docator\data_fft"
+wav_dir = r"data/all"
+save_dir = r"data_fft"
 os.makedirs(save_dir, exist_ok=True)
 
 # 遍历目录中的.wav文件
