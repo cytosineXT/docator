@@ -4,6 +4,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 from model import AudioClassifier
+import panda as pd
 
 class CatDataset(Dataset):
     def __init__(self, csv_file, audio_dir, sample_rate=16000, duration=1):

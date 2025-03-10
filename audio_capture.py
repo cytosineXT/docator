@@ -9,9 +9,10 @@ CHUNK = 1024
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 44100
-THRESHOLD = 200  # 音量阈值，需根据环境调整
-SILENT_CHUNKS = 1 * RATE / CHUNK  # 持续3秒
+THRESHOLD = 100  # 音量阈值，需根据环境调整
+SILENT_CHUNKS = 0.1 * RATE / CHUNK  # 持续1秒
 VOLUME_HISTORY_LENGTH = 10  # 音量显示平滑系数
+savedir = "data2"
 
 def save_audio(data, filename):
     os.makedirs(os.path.dirname(filename), exist_ok=True)
@@ -33,7 +34,7 @@ silent_count = 0
 volume_history = []
 
 # 创建数据目录
-os.makedirs("data", exist_ok=True)
+os.makedirs(savedir, exist_ok=True)
 
 try:
     print("实时音量监测中...（按Ctrl+C停止）")
@@ -66,7 +67,8 @@ try:
                 silent_count += 1
                 if silent_count > SILENT_CHUNKS:
                     is_recording = False
-                    filename = os.path.join("data", time.strftime("%Y%m%d_%H%M%S") + ".wav")
+                    # 使用 savedir 变量来构建文件名
+                    filename = os.path.join(savedir, time.strftime("%Y%m%d_%H%M%S") + ".wav")
                     save_audio(audio_buffer, filename)
                     print(f"\n🎉 录音已保存：{filename} [{time.strftime('%H:%M:%S')}]")
             else:
