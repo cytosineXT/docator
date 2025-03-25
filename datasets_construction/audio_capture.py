@@ -10,11 +10,17 @@ FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 44100
 THRESHOLD = 100  # 音量阈值，需根据环境调整
-SILENT_CHUNKS = 0.1 * RATE / CHUNK  # 持续1秒
+SILENT_CHUNKS = 0.1 * RATE / CHUNK  # 持续0.1秒
 VOLUME_HISTORY_LENGTH = 10  # 音量显示平滑系数
 from datetime import datetime
 date = datetime.today().strftime("%m%d")
 savedir = f"data/data{date}"
+def calculate_duration(buffer, chunk, rate):
+    return len(buffer) * chunk / rate
+
+def calculate_peak(buffer):
+    audio_data = np.concatenate(buffer)
+    return np.max(np.abs(audio_data)) if len(audio_data) > 0 else 0
 
 def save_audio(data, filename):
     os.makedirs(os.path.dirname(filename), exist_ok=True)
@@ -69,10 +75,22 @@ try:
                 silent_count += 1
                 if silent_count > SILENT_CHUNKS:
                     is_recording = False
-                    # 使用 savedir 变量来构建文件名
-                    filename = os.path.join(savedir, time.strftime("%Y%m%d_%H%M%S") + ".wav")
-                    save_audio(audio_buffer, filename)
-                    print(f"\n🎉 录音已保存：{filename} [{time.strftime('%H:%M:%S')}]")
+                    
+                    # 计算录音参数
+                    duration = calculate_duration(audio_buffer, CHUNK, RATE)
+                    peak = calculate_peak(audio_buffer)
+
+                    if duration >= 0.6 and duration <= 4 and peak >= 0.04 and peak <= 0.25:
+                        filename = os.path.join(savedir, time.strftime("%Y%m%d_%H%M%S") + ".wav")
+                        save_audio(audio_buffer, filename)
+                        print(f"\n🎉 有效录音已保存：{filename} [时长:{duration:.2f}s 峰值:{peak:.3f}]")
+                    else:
+                        reason = []
+                        if duration < 0.6: reason.append("时长不足")
+                        if duration > 4: reason.append("时长过长")
+                        if peak < 0.04: reason.append("音量过小")
+                        if peak > 0.25: reason.append("音量过大")
+                        print(f"\n⏩ 忽略无效录音：{'+'.join(reason)} [时长:{duration:.2f}s 峰值:{peak:.3f}]")
             else:
                 silent_count = 0
 

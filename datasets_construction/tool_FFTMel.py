@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from scipy.fftpack import fft
 
 # 设置目录
-wav_dir = r"data/all"
+wav_dir = r"data/a1"
 save_dir = r"data_fft"
 os.makedirs(save_dir, exist_ok=True)
 
